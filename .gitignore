@@ -1,3 +1,6 @@
 # system files
 .history
 node_modules
+
+# item files
+./docs/.vitepress/cache

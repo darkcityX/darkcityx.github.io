@@ -4,11 +4,15 @@
   "description": "darkcity_x blog",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "sass": "^1.58.3",
+    "sass-loader": "^13.2.0",
     "vitepress": "^1.0.0-alpha.46",
     "vue": "^3.2.47"
   }
