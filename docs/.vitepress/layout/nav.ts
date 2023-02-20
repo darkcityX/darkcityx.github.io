@@ -1,10 +1,10 @@
 export default [
   {
     text: '文档',
-    link: '/docs'
+    link: '/subject/hello'
   },
   {
     text: '文章',
-    link: '/article'
+    link: '/article/'
   }
 ]
