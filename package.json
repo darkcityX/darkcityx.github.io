@@ -1,0 +1,15 @@
+{
+  "name": "darkcityx-blog",
+  "version": "1.0.0",
+  "description": "darkcity_x blog",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vitepress": "^1.0.0-alpha.46",
+    "vue": "^3.2.47"
+  }
+}
