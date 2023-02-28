@@ -6,21 +6,21 @@
       </div>
       <h3 class="main-top__title">Darkcity_X</h3>
       <div class="main-top__btns">
-        <a class="top-btns__item active" href="#">快速开始</a>
-        <a class="top-btns__item" href="#">Github</a>
+        <a class="top-btns__item active" href="/subject/hello">😊快速开始</a>
+        <a class="top-btns__item" href="https://github.com/darkcityX" target="_blank">Github</a>
       </div>
     </div>
     <div class="home-main__bottom">
       <div class="main-bottom__title">前言</div>
-      <p class="main-bottom__sentence">🍉语句1</p>
-      <p class="main-bottom__sentence">🎃语句1</p>
+      <p class="main-bottom__sentence">🍉以后的你会感谢现在奋斗的你</p>
+      <p class="main-bottom__sentence">🎃加油！加油！</p>
       <div class="main-bottom__title">主要内容</div>
-      <p class="main-bottom__sentence">⚡语句1</p>
-      <p class="main-bottom__sentence">🌲语句1</p>
-      <p class="main-bottom__sentence">🔨语句1</p>
-      <p class="main-bottom__sentence">📌语句1</p>
-      <p class="main-bottom__sentence">📃语句1</p>
-      <p class="main-bottom__sentence">🏆语句1</p>
+      <p class="main-bottom__sentence">⚡ 记录 JavaScript 的各种方法</p>
+      <p class="main-bottom__sentence">🌲Vue2 和 Vue3 的一些使用</p>
+      <p class="main-bottom__sentence">🔨Vue 周边一些生态</p>
+      <p class="main-bottom__sentence">📌我的文章</p>
+      <p class="main-bottom__sentence">📃css3</p>
+      <p class="main-bottom__sentence">🏆前端面试题</p>
     </div>
   </div>
 </template>

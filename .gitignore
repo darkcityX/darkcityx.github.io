@@ -4,3 +4,4 @@ node_modules
 
 # item files
 ./docs/.vitepress/cache
+dist

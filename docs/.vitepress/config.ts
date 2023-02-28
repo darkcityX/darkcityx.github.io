@@ -12,6 +12,7 @@ const config = {
     nav,
     sidebar,
   },
-  markdown: {}
+  markdown: {},
+  outDir: '../dist/darkcityx-blog'
 }
 export default config
