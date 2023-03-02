@@ -10,7 +10,7 @@ export default {
     {
       text: 'JavaScript',
       items: [
-        { text: 'base', link: '/subject/javascript/base' },
+        { text: 'class类', link: '/subject/javascript/class' },
       ]
     },
     {
