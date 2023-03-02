@@ -1,5 +1,5 @@
-import nav from './layout/nav'
-import sidebar from './layout/sidebar'
+import nav from './layout/nav';
+import sidebar from './layout/sidebar';
 
 const base = '/';
 
@@ -14,5 +14,5 @@ const config = {
   },
   markdown: {},
   outDir: '../dist/darkcityx-blog'
-}
-export default config
+};
+export default config;
