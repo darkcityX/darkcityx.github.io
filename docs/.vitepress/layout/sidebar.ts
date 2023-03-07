@@ -33,5 +33,23 @@ export default {
         { text: '基础', link: '/subject/typeScript/base' },
       ]
     }
+  ],
+  '/article/': [
+    {
+      text: '日记',
+      items: [
+        { text: '日记2023', link: '/article/diary/2023' },
+      ]
+    },
+    {
+      text: '前端面试题',
+      items: [
+        { text: 'Web', link: '/article/offer/web' },
+        { text: 'Html', link: '/article/offer/html' },
+        { text: 'Css', link: '/article/offer/css' },
+        { text: 'Javascript', link: '/article/offer/javascript' },
+        { text: 'Vue2', link: '/article/offer/vue2' }
+      ]
+    },
   ]
 }
