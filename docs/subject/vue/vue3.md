@@ -383,6 +383,182 @@ import1： 计算属性的 getter 应只做计算而没有任何其他的副作�
 import2：避免直接修改计算属性值。从计算属性返回的值是派生状态。可以把它看作是一个“临时快照”，每当源状态发生变化时，就会创建一个新的快照。更改快照是没有意义的，因此计算属性的返回值应该被视为只读的，并且永远不应该被更改——应该更新它所依赖的源状态以触发新的计算。
 :::
 
+### 为`computed()` 标注类型
+
+computed() 会自动从其计算函数的返回值上推导出类型：
+
+```vue
+<script setup lang='ts'>
+import { ref, computed } from 'vue'
+
+const count = ref(0)
+
+// 推到得到的类型： ComputedRef<number>
+const double = computed(() => count.value*2)
+
+// => TS Error: Property 'split' does not exist on type 'number'
+const result = double.value.split('')
+</script>
+```
+
+可以通过泛型参数显示指定类型
+
+```vue
+<script setup lang='ts'>
+import { ref, computed } from 'vue'
+
+const count = ref(0)
+
+// 推到得到的类型： ComputedRef<number>
+const double = computed<number>(() => count.value*2)
+</script>
+```
+
+## 生命周期钩子
+
+每个 Vue 组件实例在创建时都需要经历一系列的初始化步骤，比如设置好数据侦听，编译模板，挂载实例到 DOM，以及在数据改变时更新 DOM。在此过程中，它也会运行被称为生命周期钩子的函数，让开发者有机会在特定阶段运行自己的代码。
+
+### `onMounted()` 在组件挂载完成后执行
+
+:::warning
+ 这个钩子在服务器端渲染期间不会被调用
+:::
+
+#### 类型：
+```vue
+function onMouned(callback: () => voide): void
+```
+
+#### 详细信息：
+组件在一下情况下被视为已挂载：
+  1. 其所有同步子组件都已经被挂载 (不包含异步组件或 `<Suspense>` 树内的组件)
+  
+  2. 其自身的 DOM 树已经创建完成并插入了父容器中。注意仅当根容器在文档中时，才可以保证组件 DOM 树也在文档中。
+
+这个钩子通常用于执行需要访问组件所渲染的 DOM 树相关的副作用，或是在服务端渲染应用中用于确保 DOM 相关代码仅在客户端执行。
+
+#### 示例：
+```vue
+<script setup>
+import { ref, onMounted } from 'vue'
+
+const el = ref()
+
+onMounted(() => {
+  el.value // <div>
+})
+</script>
+
+<template>
+  <div ref="el"></div>
+</template>
+```
+
+### `onUpdated()` 在组件因为响应式状态变更而更新其Dom树后调用
+
+:::warning
+ - 这个钩子在服务器端渲染期间不会被调用
+ - 不要在 updated 钩子中更改组件的状态，这可能会导致无限的更新循环！
+:::
+
+#### 类型：
+```vue
+function onUpdated(callback: () => voide): void
+```
+
+#### 详细信息：
+父组件的更新钩子将在其子组件的更新钩子之后调用。
+
+这个钩子会在组件的任意 DOM 更新后被调用，这些更新可能是由不同的状态变更导致的。如果你需要在某个特定的状态更改后访问更新后的 DOM，请使用 nextTick() 作为替代。
+
+#### 示例：
+```vue
+<script setup>
+import { ref, onUpdated } from 'vue'
+
+const count = ref(0)
+
+onUpdated(() => {
+  const targeDom = document.getElementById('count')
+  console.log(targeDom.textContent)
+})
+</script>
+
+<template>
+  <button id="count" @click="count++">{{count}}</button>
+</template>
+```
+
+
+### `onUnmounted()` 在组件实例被卸载之后调用
+
+:::warning
+ 这个钩子在服务器端渲染期间不会被调用
+:::
+
+#### 类型：
+```ts
+function onUnmounted(callback: () => void): void
+```
+
+#### 详细信息：
+组件在一下情况被视为已卸载：
+ 1. 其所有子组件都已经被卸载
+ 2. 所有相关的响应式作用（渲染作用以及setup()时创建的计算属性和侦听器）都已经停止。
+
+可以在该钩子中手动清理一些副作用，如定时器、Dom监听或者与服务器的连接等。
+
+#### 示例：
+```vue
+<script>
+import { onMounted, onUnmounted } from 'vue'
+
+let timer
+onMounted(() => {
+  timer = setInterval(() => {
+    // 定时器任务
+  })
+})
+
+onUnmounted(() => clearInterval(timer))
+</script>
+```
+
+### `onBeforeMount() `在组件被挂载前被调用
+
+:::warning
+  这个钩子在服务器端渲染期间不会被调用
+:::
+
+#### 类型：
+```ts
+function onBeforeMount(callback: () => void): viod
+```
+#### 详细信息：
+当这个钩子被调用时，组件已经完成了其响应式状态的设置，但还没有创建 DOM 节点。它即将首次执行 DOM 渲染过程。
+
+### `onBeforeUpdate()` 在组件即将因为响应式状态变更而更新其DOM树之前调用
+
+### onBeforeUnmount() // 在组件实例被卸载之前调用
+
+### onErrorCaptured() // 在捕获了后代组件传递的错误时调用
+
+### onRenderTracked() // 开发模式下可用，注册一个调试钩子，当组件渲染过程中追踪到响应式依赖时调用
+
+### onRenderTriggered() // 开发模式下可用，注册一个调试钩子，当响应式依赖的变更触发了组件渲染时调用。
+
+### onActivared() // 若组件实例是`<KeepAlive>`缓存树的一部分，当组件被插入到DOM中时调用
+
+### onDeactivated() // 若组件实例是 `<KeepAlive>` 缓存树的一部分，当组件从 DOM 中被移除时调用。
+
+### onServerPrefeatch() // 在组件实例在服务器上被渲染之前调用
+
+
+
+
+
+
+
 
 
 
