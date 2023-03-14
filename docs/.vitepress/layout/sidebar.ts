@@ -36,9 +36,9 @@ export default {
   ],
   '/article/': [
     {
-      text: '日记',
+      text: '笔记',
       items: [
-        { text: '日记2023', link: '/article/diary/2023' },
+        { text: '笔记2023', link: '/article/diary/2023' },
       ]
     },
     {
