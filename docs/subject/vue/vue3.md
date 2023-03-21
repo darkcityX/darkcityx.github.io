@@ -414,6 +414,221 @@ const double = computed<number>(() => count.value*2)
 </script>
 ```
 
+## `watch`、`watchEffect` 侦听器
+
+在某些情况，我们需要在状态变化时执行一些副作用，如更改DOM或这时根据异步操作的结果去修改另一个状态。在组合API中，就可以使用 `watch` 在每次响应式状态发生变化时触发回调函数：
+
+```vue
+<script setup>
+import { ref, watch } from 'vue';
+
+const question = ref('');
+const answer = ref('这是答案')；
+
+watch(question, async (newQuestion, oldQuestion) => {
+  if (newQuestion.indexof('?' > -1)) {
+    answer.value = 'Thing...';
+    try {
+      const res = await fetch('https://yesno.wtf/api');
+      answer.value = (await res.json()).answer;
+    } catch(err) {
+      answer.value = `Error:${err}`
+    }
+  }
+})
+</script>
+
+<template>
+  <p>
+    请输入你的问题：<input v-model="question" />
+  </p>
+  <p>
+    答案：{{ answer }}
+  </p>
+</template>
+```
+
+### 侦听数据源类型
+
+`watch` 的第一个参数可以时不同形式的 数据源 ：它可以是一个ref（包括计算属性）、一个响应式对象、一个getter函数、或者多个数据源组成的数组：
+
+```vue
+<script setup>
+const x = ref(0);
+const y = ref(0);
+
+// 单个ref
+watch(x, newX => {
+  console.log(`new x is ${newX}`);
+});
+
+// getter 函数
+watch(
+  () => x.value + y.value,
+  (sum) => {
+    console.log(`x y计算的总和是：${sum}`)
+  }
+)
+
+// 多个数据源组成的数组
+watch(
+  [x, () => y.value],
+  ([newX, newY]) => {
+    console.log(`x is ${newX} and y is ${newY}`)
+  }
+)
+</script>
+```
+
+注意，在侦听响应式对象的属性值时，不能直接侦听，需要用各个返回该属性的getter函数：
+
+```vue
+<script setup>
+const obj = reactive({ count: 0 });
+
+// 错误！
+watch(obj.count, (count) => {
+  console.log(`count is: ${count}`);
+});
+
+// 正确： 提供了一个 getter 函数
+watch(
+  () => obj.count,
+  (count) => {
+    console.log(`count is: ${count}`);
+  }
+)
+</script>
+```
+
+### 深层监听
+
+直接给watch() 传入一个响应式对象，会隐式地创建一个深层侦听器-该回调函数在所有嵌套的变更时都会被触发
+
+```vue
+<script setup>
+import { reactive, watch } from 'vue'
+const obj = reactive({ count: 0 });
+
+watch(
+  obj,
+  (newVal, oldVal) => {
+    // 在嵌套的属性变更时触发
+    // 注意： `newVal` 和 `oldVal` 是相等的, 因为他们是同一个对象
+  }
+)
+
+obj.count++
+</script>
+```
+
+一个返回响应式对象的getter函数，只有在返回不同的对象时，才会触发回调：
+```vue
+<script setup>
+import { ref, reactive, watch } from 'vue';
+const state = reactive({
+  someObject: {
+    count: 0
+  }
+});
+const showP = ref('');
+
+watch(
+  () => state.someObject,
+  (newVal) => {
+    // 仅当state.someObject 被替换时触发
+    console.log(`newVal::`, newVal);
+    showP.value = newVal;
+  }
+);
+
+// 该种是不会触发watch监听
+state.someObject.count++;
+
+// 该种会触发watch监听
+state.someObject = {
+  a: 1
+}
+</script>
+
+<template>
+  <p>
+    watch:::
+  	{{ showP }}
+  </p>
+</template>
+```
+
+若想强制转成深层侦听，需要显示的增加上deep选项
+```vue
+<script setup>
+import { ref, reactive, watch } from 'vue';
+const state = reactive({
+  someObject: {
+    count: 0
+  }
+});
+const showP = ref('');
+
+watch(
+  () => state.someObject,
+  (newVal) => {
+    console.log(`newVal::`, newVal);
+    showP.value = newVal;
+  },
+  // 显式强制转换为深层监听
+  {
+    deep: true
+  }
+);
+
+state.someObject.count++;
+</script>
+
+<template>
+  <p>
+    watch:::
+  	{{ showP }}
+  </p>
+</template>
+```
+:::warning 谨慎使用
+深度侦听需要遍历被侦听对象中的所有嵌套的属性，当用于大型数据结构时，开销很大。因此请只在必要时才使用它，并且要留意性能。
+:::
+
+### 即时回调的侦听器
+
+`watch` 默认是懒执行：仅当数据源变化时，才会执行回调。
+
+在某些场景下，我们希望在创建侦听器时，就要立即执行一遍回调。这时，我们可以通过 `immediate: true` 来强制侦听器的回调立即执行。
+
+```vue
+<script setup>
+import { ref, reactive, watch } from 'vue';
+const state = reactive({
+  count: 10
+});
+const showP = ref(0);
+
+watch(
+  () => state.count,
+  (newVal) => {
+    console.log(`newVal::`, newVal);
+    showP.value = newVal;
+  },
+  {
+    immediate: true
+  }
+);
+</script>
+```
+
+### `watchEffect()`
+
+
+
+
+
 ## 生命周期钩子
 
 每个 Vue 组件实例在创建时都需要经历一系列的初始化步骤，比如设置好数据侦听，编译模板，挂载实例到 DOM，以及在数据改变时更新 DOM。在此过程中，它也会运行被称为生命周期钩子的函数，让开发者有机会在特定阶段运行自己的代码。

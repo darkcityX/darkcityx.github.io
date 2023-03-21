@@ -8,12 +8,6 @@ export default {
       ]
     },
     {
-      text: 'JavaScript',
-      items: [
-        { text: 'class类', link: '/subject/javascript/class' },
-      ]
-    },
-    {
       text: 'Css',
       items: [
         { text: 'css基础', link: '/subject/css/cssbase' },
@@ -21,16 +15,23 @@ export default {
       ]
     },
     {
-      text: 'Vue',
+      text: 'JavaScript',
       items: [
-        { text: 'Vue2', link: '/subject/vue/vue2' },
-        { text: 'Vue3', link: '/subject/vue/vue3' },
+        { text: '函数', link: '/subject/javascript/function' },
+        { text: 'class类', link: '/subject/javascript/class' },
       ]
     },
     {
       text: 'typeScript',
       items: [
         { text: '基础', link: '/subject/typeScript/base' },
+      ]
+    },
+    {
+      text: 'Vue',
+      items: [
+        { text: 'Vue2', link: '/subject/vue/vue2' },
+        { text: 'Vue3', link: '/subject/vue/vue3' },
       ]
     }
   ],
