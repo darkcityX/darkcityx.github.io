@@ -417,7 +417,104 @@ let personal = {
 personal.getName()
 ```
 
-## apply/call/bind 
+## apply/call/bind
+
+改变 `this` 指针，也可以理解为对象借用方法。
+
+例子1🌰： 构造函数中的 `this` 默认是一个空对象，然后构造函数处理后把这个空对象变得有值
+
+```javascript
+function User(name) {
+  this.name = name;
+}
+
+let hd = mew User('张三');
+```
+
+
+例子2🌰：可以改变构造函数中的空对象，即让构造函数 `this` 指向到另一个对象。
+
+```javascript
+function User(name) {
+  this.name = name;
+}
+
+let Worker = {};
+
+User.call(Worker, '打工人张三');
+console.log(Worker); // {name: '打工人张三'}
+```
+
+### apply
+
+用于显示的设置函数的上下文，将对象绑定到显示设置的this上，其用 `数组` 作为参数。与 `bind` 不同，apply会立即执行。
+
+语法：
+```javascript
+function show(title) {
+    alert(`${title+this.name}`);
+}
+let wangwu = {
+    name: '王五'
+};
+show.apply(wangwu, ['打灯人']);
+```
+
+例子1🌰：找数组中的最大值
+
+```javascript
+let arr = [1, 4, 5, 7, 56];
+
+console.log(Math.max(arr)); // NaN
+console.log(Math.max.apply(Math, arr)); // 56
+console.log(Math.max(...arr)); // 56
+```
+
+### call
+
+用于显示的设置函数的上下文，将对象绑定到显示设置的this上，其需要分别传递参数。与 `bind` 不同，call会立即执行。
+
+```javascript
+function show(title) {
+    alert(`${title+this.name}`);
+}
+let wangwu = {
+    name: '王五'
+};
+show.call(wangwu, '打灯人');
+```
+
+### bind
+
+bind是将函数绑定到某个对象上，比如a.bind(fn)可以理解为将a函数绑定到fn对象上，即fn.a()
+
+- 与 `call/apply` 不同，bind不会立即执行
+- bind 是复制函数行为会返回新的函数
+
+```javascript
+let a = function() {};
+let b = a;
+console.log(a === b); // true
+
+let c = a.bind();
+console.log(a === c); // false
+```
+
+绑定参数
+
+```javascript
+function fn(a, b) {
+  return this.f + a + b;
+}
+
+//使用bind生成新函数;  第一位参数传递this指向
+let newFn = fn.bind({f: 1}, 3);
+
+// this => {f: 1} ;  a => 3;  b => 2
+console.log(newFn(2))
+```
+
+
 
 
 

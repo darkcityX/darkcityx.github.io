@@ -633,6 +633,8 @@ watch(
 
 每个 Vue 组件实例在创建时都需要经历一系列的初始化步骤，比如设置好数据侦听，编译模板，挂载实例到 DOM，以及在数据改变时更新 DOM。在此过程中，它也会运行被称为生命周期钩子的函数，让开发者有机会在特定阶段运行自己的代码。
 
+![生命周期](/images/vue3/lifecycle.png)
+
 ### `onMounted()` 在组件挂载完成后执行
 
 :::warning
@@ -769,15 +771,181 @@ function onBeforeMount(callback: () => void): viod
 ### onServerPrefeatch() // 在组件实例在服务器上被渲染之前调用
 
 
+## 模板引用 ref
+
+在某些情况下，我们需要直接访问底层Dom元素。要实现这一点，我们可以使用特殊的 `ref` 标签属性。它允许我们在一个特定的Dom元素或子组件实例被挂载后，获得对它的直接引用。
+
+### 访问模板引用
+
+为了通过组合式API获取该模板引用，我们需要声明一个同名的ref:
+
+```vue
+<template>
+  <imput ref="inputRef" />
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+
+const inputRef = ref(null)
+
+onMounted(() => {
+  inputRef.value.focus()
+})
+</script>
+```
+
+注意，你只可以在**在组件挂载后**才能访问模板引用。如果你想在模板中的表达式上访问input，在初次渲染时会是 `null`。
+
+如果你需要侦听一个模板引用ref的变化，确保考虑到其值为 `null` 的情况。
+
+### 为模板引用标注类型
+
+模板引用需要通过一个显式指定的泛型参数和一个初始值 `null` 来创建：
 
 
+```vue
+<template>
+  <input ref="el" />
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+
+const el = ref<HTMLInputElement | null>(null)
+
+onMounted(() => {
+  el.value?.focus()
+})
+</script>
+```
 
 
+### v-for 中的模板引用
+
+:::warning 版本要求
+需要 v3.2.25 及以上版本
+:::
+
+当 `v-for` 中使用模板引用时，对应的ref中包含的值是一个数组，它将在元素被挂载后包含对应整个列表的所有元素
+
+应当注意的是， ref数组并不保证与原数组相同的顺序。
+
+```vue
+<template>
+  <ul>
+    <li v-for="item in list" ref="itemRefs">
+      {{ item }}
+    </li>
+  </ul>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+
+const inputRef = ref([])
+
+onMounted(() => {
+  inputRef.value.focus()
+})
+</script>
+```
+
+### 函数模板引用
+
+除了使用字符串作名字， `ref` 标签属性还可以绑定为一个函数，会在每次组件更新时被调用，该函数会接收到元素引用作为第一个参数：
+
+```vue
+<template>
+  <input :ref="(el) => { /* 将 el 赋值给一个数据属性或 ref 变量 */ }">
+</template>
+```
+
+注意我们这里需要使用动态的 `:ref` 绑定才能够传入一个函数。当绑定的元素被卸载时，函数也会被调用一次，此时的 `el` 参数会时null。你当然也可以绑定一个组件的方法而不是内联函数
+
+### 组件上的ref
+
+模板引用可以用在一个子组件上，这种情况下引用中获得的值是组件实例。
+
+如果一个子组件使用的是选项是API或没有使用 `<script setup>` , 被引用的组件实例和该子组件的 `this` 完全一致，这意味着父组件对子组件的每一个属性和方法都有完全的访问权。这使得父组件和子组件之间创建紧密耦合的实现细节变得很容易，当然也因此，应该旨在绝对需要时才使用组件引用。 绝大数情况下，你应该首先使用标准的props和 emit接口来实现父子组件交互
+
+```vue
+<template>
+  <Child ref="childRef"/>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import Child from './Child.vue'
+
+const childrenRef = ref(null)
+
+onMounted(() => {
+  console.log(childrenRef)
+})
+</script>
+```
+
+在使用了 `<script setup>` 的组件中，该组件内的属性和方法时默认私有的： 一个父组件无法访问到一个使用了 `<script setup>`  的子组件中的任何东西，除非子组件在其中通过 `defineExpose` 宏显示暴露：
+
+```vue
+<script setup>
+import { ref, onMounted } from 'vue'
+
+const a = 1
+const b = ref(2)
 
 
+// 像 defineExpose 这样的编译宏无须导入
+defineExpose({
+  a,
+  b
+})
+</script>
+```
+### 为组件的模板引用标注类型
 
+有时，需要为一个子组件添加一个模板引用，以便调用它公开的方法。举例，有一个 `Modal` 子组件，它有一个打开模态框的方法
 
+```vue
+// Modal.vue
+<script setup lang="ts">
+import { ref } from 'vue'
 
+const visibe = ref(false)
+const open = () => (visibe.value = true)
+
+defineExpose({
+  open
+})
+</script>
+```
+
+为了获取 `modal` 的类型，我们首先需要通过 `typeof` 得到其类型， 再使用 `TypeScript` 内置的 `InstanceType` 工具类型来获取其实例类型：
+
+```vue
+// App.vue
+<script setup lang="ts">
+import Modal from './Modal.vue'
+
+const modalRef = ref<InstanceType<typeof Modal> | null>(null)
+
+const openMoal = () => {
+  modal.value?.open()
+}
+</script>
+```
+
+如果想在 `TypeScript` 文件而不是 Vue SFC 中使用这种技巧， 需要开启 Volar的 `Takeover模式`
+
+如果组件的具体类型无法获取，或者你并不关心组件的具体类型，那么可以使用 `ComponenyPublicInstance`。这智慧包含所有组件都共享的属性， 比如 `$el`。
+
+```ts
+import { ref } from 'vue'
+import  type { ComponentPublicInstance } from 'vue'
+
+const child = ref<ComponentPublickInstance | null>(null)
+```
 
 
 

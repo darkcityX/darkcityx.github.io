@@ -6,6 +6,11 @@ const base = '/';
 const config = {
   base,
   title: 'darkcityX',
+  head: [
+    ['link', {
+      rel: 'icon', href: '/images/favicon.ico'
+    }]
+  ],
   description: 'darkcityX vitepress blog',
   lastUpdated: true,
   themeConfig: {
