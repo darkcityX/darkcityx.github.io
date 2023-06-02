@@ -43,6 +43,13 @@ export default {
       ]
     },
     {
+      text: 'git相关',
+      items: [
+        { text: 'git命令', link: '/article/gitAbout/gitbash' },
+        { text: 'github', link: '/article/gitAbout/github' }
+      ]
+    },
+    {
       text: '前端面试题',
       items: [
         { text: 'Web', link: '/article/offer/web' },

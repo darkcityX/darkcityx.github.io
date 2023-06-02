@@ -625,7 +625,117 @@ watch(
 
 ### `watchEffect()`
 
+侦听器的回调使用与源完全相同的响应式状态是很常见的。需要注意的是监听的数据一次是作为源，另一次是在回调中
 
+```vue
+<script setup>
+import { ref, watch } from 'vue'
+
+const todoId = ref(1)
+const data = ref(null)
+
+watch(
+  todoId,
+  async () => {
+    const response = await fetch(`https://jsonplaceholder.typicode.com/todos/${todoId.value}`)
+    data.value = await reponse.json()
+  },
+  {
+    immediate: true
+  }
+)
+</script>
+```
+
+以上示例可以使用 `watchEffect 函数` 来简化上面的代码。 `waatchEffect()` 允许我们自动跟踪毁掉的响应式依赖。
+
+```vue
+<script setup>
+import { ref, watchEffect } from 'vue'
+
+const todoId = ref(1)
+const data = ref(null)
+
+watchEffect(
+  async () => {
+    const response = await fetch(`https://jsonplaceholder.typicode.com/todos/${todoId.value}`)
+    data.value = await reponse.json()
+  },
+  {
+    immediate: true
+  }
+)
+</script>
+```
+
+在该示例中，回调会立即执行，不需要指定 `immediate: true`。 在执行期间，它会自动追踪 `todoId.value` 作为依赖。每当 `todoId.value` 变化时，回调会再次执行。有了`watchEffect()` 就不在需要 明确传递 `todoId` 作为源值。
+
+对于只有一个依赖项的示例来说， `watchEffect()` 的好处相对较小。 但是对于有多个依赖项的侦听器来说，使用 `wacthEffect()` 可以消除手动维护依赖列表的负担。此外，如果你需要侦听一个嵌套数据结构中的几个属性，`watchEffect()` 可能回避深度侦听器更有效，因为它将只跟踪回调中被使用到的属性，而不是递归跟踪所有的属性。
+
+:::warning 注意
+`watchEffect` 仅会在其 `同步` 执行期间，才追踪依赖。 在使用异步回调时，只有在第一个 `await` 正常工作前访问到的属性才会被追踪。
+:::
+
+### `watch` vs `watchEffect`
+
+`watch` 和 `watchEffect` 都能响应式地执行有副作用的回调。它们之间的区别是追踪响应式依赖的方式：
+
+- `watch` 只追踪明确声明侦听的数据源。它不会追踪任何在回调中访问的东西。另外，仅在数据源确实改变时才会触发回调。`watch` 会避免在发生副作用时追踪依赖，因此，我们能更加精确的控制回调函数的触发时机。
+
+- `watchEffect` 则会在副作用发生期间追踪依赖。它会在同步执行过程中，自动追踪所有能访问到的响应式属性。这更方便，而且代码往往更简介，但是响应式依赖关系就不会那么明确
+
+### 回调的触发时机
+
+当你更改了响应式状态，他可能会同时触发Vue组件更新和侦听器回调。
+
+默认情况下，用户创建的侦听器回调，都会在Vue组件更新之前被调用。这意味着你在侦听器回调中访问的DOM将是被Vue更新之前的状态。
+
+如果想在侦听器回调中能访问被vue更新之后的DOM, 你需要指明 `flush: 'post'` 选项：
+
+```vue
+<script setup>
+// watch
+watch(
+  source,
+  callBack,
+  { flush: 'post' }
+)
+
+// watchEffect
+watchEffect(
+  callBack,
+  { flush: 'post' }
+)
+
+// wacthEffect post 简化api
+import { wacthPostEffect } from 'vue'
+
+watchPostEffect(() => {
+  /* 在vue更新后执行 */
+})
+</script>
+```
+
+### 停止侦听器
+
+在 `setip()` 或 `<script setup>` 中用同步语句创建的侦听器，会自动绑定到宿主实例上，并且会在宿主组件卸载时自动停止。
+
+侦听器必须用同步语句创建：如果用异步回调创建一个侦听器，那么它不会绑定到当前组件上，你必须手动停止它，以防内存泄漏。
+
+```vue
+<script setup>
+import { wactEffect } from 'vue'
+
+// 它会自动停止
+wactEffect(() => {})
+
+// 这个则不会
+setTimeout(() => {
+  wacthEffect(() => {})
+}, 100)
+
+</script>
+```
 
 
 
