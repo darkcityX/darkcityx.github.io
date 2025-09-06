@@ -1,0 +1,42 @@
+import{_ as n,c as a,a0 as e,o as p}from"./chunks/framework.CSihnngI.js";const l="/images/cursor/image02.png",m=JSON.parse('{"title":"进阶","description":"","frontmatter":{},"headers":[],"relativePath":"majorTopic/cursor/advanced.md","filePath":"majorTopic/cursor/advanced.md","lastUpdated":1757157043000}'),r={name:"majorTopic/cursor/advanced.md"};function i(t,s,c,o,u,d){return p(),a("div",null,s[0]||(s[0]=[e('<h1 id="进阶" tabindex="-1">进阶 <a class="header-anchor" href="#进阶" aria-label="Permalink to &quot;进阶&quot;">​</a></h1><h2 id="关于-快速锁定上下文" tabindex="-1">关于@快速锁定上下文 <a class="header-anchor" href="#关于-快速锁定上下文" aria-label="Permalink to &quot;关于@快速锁定上下文&quot;">​</a></h2><p><img src="'+l+`" alt="@"></p><h3 id="files-folders" tabindex="-1">Files &amp; Folders <a class="header-anchor" href="#files-folders" aria-label="Permalink to &quot;Files &amp; Folders&quot;">​</a></h3><p>添加文件或者文件夹作为联系上下文</p><h3 id="code" tabindex="-1">code <a class="header-anchor" href="#code" aria-label="Permalink to &quot;code&quot;">​</a></h3><p>以某个代码片段作为上下文</p><h3 id="docs" tabindex="-1">DOCS <a class="header-anchor" href="#docs" aria-label="Permalink to &quot;DOCS&quot;">​</a></h3><p>以某个外部链接文档作为上下文片段</p><h3 id="git" tabindex="-1">git <a class="header-anchor" href="#git" aria-label="Permalink to &quot;git&quot;">​</a></h3><p>以某次/多次 commit|Branch|diff status 为上下文片段</p><h2 id="关于-cursor-rules" tabindex="-1">关于 cursor.rules <a class="header-anchor" href="#关于-cursor-rules" aria-label="Permalink to &quot;关于 cursor.rules&quot;">​</a></h2><p>用来固定常用的上下文，根据个⼈和项⽬需要，设置 AI 需要遵循的常⻅的个⼈喜好和项⽬规范的规则。</p><ul><li>个人通用规则：</li></ul><div class="language- vp-adaptive-theme line-numbers-mode"><button title="Copy Code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>## General rules:</span></span>
+<span class="line"><span>- If question is in Chinese, please translate it to English and query</span></span>
+<span class="line"><span>with English</span></span>
+<span class="line"><span>- Always response in Chinese</span></span></code></pre><div class="line-numbers-wrapper" aria-hidden="true"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><ul><li>前/后端项目规则模版：</li></ul><p>参考网站：<a href="https://cursor.directory/vuejs-typescript-best-practice" target="_blank" rel="noreferrer">https://cursor.directory/vuejs-typescript-best-practice</a></p><div class="language- vp-adaptive-theme line-numbers-mode"><button title="Copy Code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>You are an expert in Nuxt 3, TypeScript, Tailwind CSS, and Vue 3.</span></span>
+<span class="line"><span>## Project Background:</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>- This is a Nuxt 3 web application named &quot;recurve-webapp&quot; with a focus</span></span>
+<span class="line"><span>on modularity and performance.</span></span>
+<span class="line"><span>## Coding Standards:</span></span>
+<span class="line"><span>- Use TypeScript for all JavaScript files.</span></span>
+<span class="line"><span>- Follow the Airbnb JavaScript style guide.</span></span>
+<span class="line"><span>- Use functional components and Composition API.</span></span>
+<span class="line"><span>- Ensure all code passes ESLint checks with the provided configuration.</span></span>
+<span class="line"><span>- review your code and don&#39;t write duplicate code, make code</span></span>
+<span class="line"><span>maintainable and extensible</span></span>
+<span class="line"><span>## Preferred Libraries and Frameworks:</span></span>
+<span class="line"><span>- Utilize Tailwind CSS for styling.</span></span>
+<span class="line"><span>- Use Pinia for state management.</span></span>
+<span class="line"><span>- Implement form validation based on Element Plus</span></span>
+<span class="line"><span>- Employ VueUse for utility functions.</span></span>
+<span class="line"><span>## File Structure:</span></span>
+<span class="line"><span>- Place reusable UI components in the \`components\` directory, with</span></span>
+<span class="line"><span>atomic components design.</span></span>
+<span class="line"><span>- Store pages in the \`pages\` directory.</span></span>
+<span class="line"><span>- Keep static assets in the \`public\` directory.</span></span>
+<span class="line"><span>- Organize store modules in the \`store\` directory.</span></span>
+<span class="line"><span>## Performance Optimization:</span></span>
+<span class="line"><span>- Optimize images and other assets for web delivery.</span></span>
+<span class="line"><span>- Implement code splitting and lazy loading where appropriate.</span></span>
+<span class="line"><span>- Minimize the use of heavy dependencies to enhance performance.</span></span>
+<span class="line"><span>## Testing Requirements:</span></span>
+<span class="line"><span>- Write unit tests for all components using Jest.</span></span>
+<span class="line"><span>- Achieve at least 80% test coverage across the codebase.</span></span>
+<span class="line"><span>- Use Vue Testing Library for component testing.</span></span>
+<span class="line"><span>## Documentation Standards:</span></span>
+<span class="line"><span>- Document all functions and components using JSDoc.</span></span>
+<span class="line"><span>- Maintain an up-to-date \`README.md\` at the project root.</span></span>
+<span class="line"><span>- Provide clear instructions for setup and deployment.</span></span>
+<span class="line"><span>## Error Handling:</span></span>
+<span class="line"><span>- Handle asynchronous operations with proper error catching.</span></span>
+<span class="line"><span>- Implement global error handling mechanisms.</span></span>
+<span class="line"><span>- Validate all user inputs to prevent runtime errors.</span></span></code></pre><div class="line-numbers-wrapper" aria-hidden="true"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br></div></div><ul><li>使用 cursor 读取项目生成规则模版：</li></ul><p>在 Agent 模式下， 输入 / ， 使用 Generate Cursor Rules</p>`,20)]))}const h=n(r,[["render",i]]);export{m as __pageData,h as default};
